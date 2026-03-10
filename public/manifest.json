@@ -1,0 +1,21 @@
+{
+    "name": "FIRSAT ÜRÜN",
+    "short_name": "FırsatÜrün",
+    "description": "Türkiye'nin en güvenilir fırsat paylaşım platformu",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FAFBFE",
+    "theme_color": "#FF6B6B",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ],
+    "categories": [
+        "shopping",
+        "lifestyle"
+    ]
+}

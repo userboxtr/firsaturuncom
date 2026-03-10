@@ -1,0 +1,5 @@
+git_yonetici.sh
+node_modules/
+.env
+*.db*
+*.log

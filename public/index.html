@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="FIRSAT ÜRÜN - Türkiye'nin en güvenilir fırsat paylaşım platformu. Gerçek fırsatlar, gerçek insanlar. AI destekli sahte indirim tespiti.">
+    <meta name="keywords" content="fırsat, indirim, kupon, trendyol, hepsiburada, amazon, bim, a101, sok, kampanya">
+    <meta name="theme-color" content="#56C6C0">
+    <!-- Open Graph -->
+    <meta property="og:title" content="FIRSAT ÜRÜN - Gerçek Fırsatlar, Gerçek İnsanlar">
+    <meta property="og:description"
+        content="Türkiye'nin en güvenilir fırsat paylaşım platformu. AI destekli sahte indirim tespiti.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FIRSAT ÜRÜN">
+    <meta name="twitter:description" content="Türkiye'nin en güvenilir fırsat paylaşım platformu.">
+    <link rel="canonical" href="/">
+    <title>FIRSAT ÜRÜN - Gerçek Fırsatlar, Gerçek İnsanlar</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+</head>
+
+<body>
+    <!-- Demo + Yatırımcı Banner -->
+    <div class="investor-banner">
+        <span>🚧 Bu site şu anda <strong>DEMO / TEST</strong> aşamasındadır. İçerikler gerçek değildir.</span>
+        <span style="margin-left:16px;opacity:0.85;cursor:pointer;text-decoration:underline;"
+            onclick="Modal.open('investorModal')">💰 Yatırımcı başvurusu →</span>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="header-inner">
+            <a href="/" class="logo" id="logoLink">
+                <div class="logo-icon">🛒</div>
+                <span class="logo-text">
+                    <span class="logo-text-top">FIRSAT</span>
+                    <span class="logo-text-bottom">ÜRÜN</span>
+                </span>
+            </a>
+
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="İndirim ara...">
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-icon mobile-search-btn" id="mobileSearchBtn" title="Ara"
+                    style="display:none;">🔍</button>
+
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Tema Değiştir">🌙</button>
+
+                <div class="dropdown" id="notifDropdown">
+                    <button class="btn-icon" id="notifBtn" title="Bildirimler">
+                        🔔
+                        <span class="notification-badge hidden" id="notifBadge">0</span>
+                    </button>
+                    <div class="notification-panel" id="notifPanel">
+                        <div
+                            style="padding: 12px 16px; font-weight: 700; font-size: 0.9rem; border-bottom: var(--border-light);">
+                            Bildirimler
+                        </div>
+                        <div id="notifList">
+                            <div class="empty-state" style="padding: 24px;">
+                                <p class="text-muted text-sm">Henüz bildirim yok</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giriş Yapmamış -->
+                <div id="authButtons">
+                    <button class="btn btn-primary btn-sm" id="loginBtn">Giriş Yap</button>
+                </div>
+
+                <!-- Giriş Yapmış -->
+                <div class="dropdown hidden" id="userDropdown">
+                    <div class="user-avatar" id="userAvatarBtn">
+                        <span id="userAvatarLetter">U</span>
+                    </div>
+                    <div class="dropdown-menu" id="userMenu">
+                        <div style="padding: 8px 14px; font-size: 0.82rem;">
+                            <div style="font-weight: 700;" id="menuUsername">Kullanıcı</div>
+                            <div style="color: var(--text-muted); font-size: 0.75rem;" id="menuLevel">Çaylak</div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="menuProfile">👤 Profilim</div>
+                        <div class="dropdown-item" id="menuMyDeals">🔥 Fırsatlarım</div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="menuLogout" style="color: var(--accent-primary);">🚪 Çıkış Yap
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobil Arama -->
+        <div class="header-search-mobile" id="mobileSearch">
+            <div class="search-container" style="max-width:none;">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="mobileSearchInput"
+                    placeholder="Fırsat, ürün veya mağaza ara...">
+            </div>
+        </div>
+    </header>
+
+    <!-- Kategori Şeridi -->
+    <div class="category-strip" id="categoryStrip">
+        <div class="category-pill active" data-category="">Tüm Fırsatlar</div>
+    </div>
+
+    <!-- Sıralama + Filtre -->
+    <div class="sort-tabs" id="sortTabs">
+        <button class="sort-tab active" data-sort="hot">🔥 Sıcak</button>
+        <button class="sort-tab" data-sort="new">🆕 Yeni</button>
+        <button class="sort-tab" data-sort="comments">💬 Tartışılan</button>
+        <button class="sort-tab" data-sort="discount">💰 En Çok İndirim</button>
+        <button class="filter-toggle-btn" id="filterToggleBtn" style="margin-left:auto;">🔍 Filtrele</button>
+    </div>
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-group">
+            <label>Min Fiyat (₺)</label>
+            <input type="number" id="filterMinPrice" placeholder="0" min="0">
+        </div>
+        <div class="filter-group">
+            <label>Max Fiyat (₺)</label>
+            <input type="number" id="filterMaxPrice" placeholder="∞" min="0">
+        </div>
+        <div class="filter-group">
+            <label>Mağaza</label>
+            <input type="text" id="filterStore" placeholder="Trendyol...">
+        </div>
+        <div class="filter-group">
+            <label>Tür</label>
+            <select id="filterType">
+                <option value="">Tümü</option>
+                <option value="online">Online</option>
+                <option value="store">Mağaza</option>
+                <option value="coupon">Kupon</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label style="visibility:hidden">_</label>
+            <label
+                style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.82rem;color:var(--text-medium);text-transform:none;letter-spacing:0;">
+                <input type="checkbox" id="filterCoupon"> 🎟️ Kuponlu
+            </label>
+        </div>
+        <div class="filter-group">
+            <label style="visibility:hidden">_</label>
+            <button class="btn btn-sm btn-primary" id="applyFiltersBtn" style="padding:7px 16px;">Uygula</button>
+        </div>
+        <div class="filter-group">
+            <label style="visibility:hidden">_</label>
+            <button class="btn btn-sm" id="clearFiltersBtn" style="padding:7px 12px;color:var(--text-light);">✕
+                Temizle</button>
+        </div>
+    </div>
+    <main class="main-content">
+        <!-- Fırsat Listesi -->
+        <div class="deals-feed" id="dealsFeed">
+            <!-- Skeleton loading -->
+            <div class="deal-card" id="skeletonLoader">
+                <div class="deal-card-image">
+                    <div class="skeleton" style="width:100%;height:100%;"></div>
+                </div>
+                <div class="deal-card-body">
+                    <div class="skeleton" style="width:40%;height:14px;"></div>
+                    <div class="skeleton" style="width:90%;height:18px;margin-top:8px;"></div>
+                    <div class="skeleton" style="width:50%;height:20px;margin-top:12px;"></div>
+                </div>
+            </div>
+            <div class="deal-card">
+                <div class="deal-card-image">
+                    <div class="skeleton" style="width:100%;height:100%;"></div>
+                </div>
+                <div class="deal-card-body">
+                    <div class="skeleton" style="width:40%;height:14px;"></div>
+                    <div class="skeleton" style="width:90%;height:18px;margin-top:8px;"></div>
+                    <div class="skeleton" style="width:50%;height:20px;margin-top:12px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kenar Çubuğu -->
+        <aside class="sidebar" id="sidebarArea">
+            <!-- Fırsat Paylaş CTA -->
+            <div class="sidebar-card"
+                style="background: linear-gradient(135deg, #2BC4B4, #0EB89F); color: white; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 8px;">🔥</div>
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Fırsat Buldun mu?</div>
+                <div style="font-size: 0.82rem; opacity: 0.9; margin-bottom: 16px;">Toplulukla paylaş, puanlar kazan!
+                </div>
+                <button class="btn btn-lg submit-deal-btn"
+                    style="background: white; color: #1A9E91; font-weight: 700; width: 100%;">
+                    Fırsat Paylaş
+                </button>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">📊 İstatistikler</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statUsers">0</div>
+                        <div class="stat-label">Kullanıcı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statDeals">0</div>
+                        <div class="stat-label">Fırsat</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statToday">0</div>
+                        <div class="stat-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statComments">0</div>
+                        <div class="stat-label">Yorum</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liderlik Tablosu -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🏆 Haftanın En İyileri</div>
+                <div id="leaderboardList">
+                    <p class="text-sm text-muted">Henüz kullanıcı yok</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- FAB - Fırsat Paylaş -->
+    <button class="fab submit-deal-btn" id="fabBtn">
+        ➕ <span class="fab-text">FIRSAT PAYLAŞ</span>
+    </button>
+
+    <!-- Login/Register Modal -->
+    <!-- Yatırımcı Modalı -->
+    <div class="modal-overlay" id="investorModal">
+        <div class="modal investor-modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💰 Yatırımcı Başvurusu</h2>
+                <button class="modal-close" onclick="Modal.close('investorModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:16px;color:var(--text-medium);font-size:0.85rem;line-height:1.6;">
+                    FIRSAT ÜRÜN, Türkiye'nin en güvenilir fırsat paylaşım platformudur. AI destekli sahte indirim
+                    tespiti, güçlü topluluk ve hızla büyüyen kullanıcı tabanı ile yatırıma değer bir projedir.
+                    Detaylarınızı paylaşın, sizinle iletişime geçelim.
+                </p>
+                <div class="investor-form-group">
+                    <label>Ad Soyad *</label>
+                    <input type="text" id="investorName" placeholder="Adınız Soyadınız" required>
+                </div>
+                <div class="investor-form-group">
+                    <label>E-posta *</label>
+                    <input type="email" id="investorEmail" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="investor-form-group">
+                    <label>Telefon</label>
+                    <input type="tel" id="investorPhone" placeholder="+90 5xx xxx xxxx">
+                </div>
+                <div class="investor-form-group">
+                    <label>Şirket / Kurum</label>
+                    <input type="text" id="investorCompany" placeholder="Şirket adı (opsiyonel)">
+                </div>
+                <div class="investor-form-group">
+                    <label>Neden Bu Projeye Yatırım Yapmalıyız? *</label>
+                    <textarea id="investorMessage" rows="4"
+                        placeholder="Yatırım nedeniniz, bütçe aralığınız, beklentileriniz..."></textarea>
+                </div>
+                <button class="btn btn-primary" id="investorSubmitBtn" onclick="App.submitInvestorForm()"
+                    style="width:100%;padding:12px;">
+                    🚀 Başvuruyu Gönder
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="authModalTitle">Giriş Yap</h2>
+                <button class="modal-close" id="authModalClose">✕</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Giriş Yap</button>
+                <div class="auth-switch">
+                    Hesabın yok mu? <a href="#" id="switchToRegister">Kayıt Ol</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">Kullanıcı Adı</label>
+                    <input type="text" class="form-input" id="regUsername" placeholder="firsat_avcisi" minlength="3"
+                        maxlength="20" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" class="form-input" id="regPassword" placeholder="En az 6 karakter"
+                        minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Kayıt Ol</button>
+                <div class="auth-switch">
+                    Zaten hesabın var mı? <a href="#" id="switchToLogin">Giriş Yap</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fırsat Paylaş Modal - PRO -->
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal" style="max-width: 640px;">
+            <div class="modal-header">
+                <h2 class="modal-title">🔥 Yeni Fırsat Paylaş</h2>
+                <button class="modal-close" id="submitModalClose">✕</button>
+            </div>
+
+            <form id="submitDealForm">
+                <!-- 📸 Görsel Bölümü -->
+                <div style="margin-bottom: 20px;">
+                    <label class="form-label">� Ürün Görseli</label>
+                    <div id="imageDropZone" style="
+                        border: 2px dashed var(--text-light);
+                        border-radius: var(--radius-lg);
+                        padding: 24px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        background: #F5F7FA;
+                        position: relative;
+                        min-height: 140px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                        <div id="imageDropContent">
+                            <div style="font-size: 2.5rem; margin-bottom: 8px;">📷</div>
+                            <p style="font-weight: 600; color: var(--text-dark); margin-bottom: 4px;">Görseli
+                                sürükle-bırak veya tıkla</p>
+                            <p style="font-size: 0.78rem; color: var(--text-light);">JPG, PNG, WEBP · Max 5MB</p>
+                        </div>
+                        <div id="imagePreviewArea" style="display: none; width: 100%;">
+                            <img id="imagePreview"
+                                style="max-width: 100%; max-height: 200px; object-fit: contain; border-radius: var(--radius-md); margin: 0 auto;" />
+                            <button type="button" id="removeImageBtn" style="
+                                position: absolute; top: 8px; right: 8px;
+                                width: 28px; height: 28px; border-radius: 50%;
+                                background: rgba(255,71,87,0.9); color: white; border: none;
+                                font-size: 0.8rem; cursor: pointer; display: flex;
+                                align-items: center; justify-content: center;
+                            ">✕</button>
+                            <p id="imageFileName"
+                                style="font-size: 0.72rem; color: var(--text-light); margin-top: 6px;"></p>
+                        </div>
+                        <input type="file" id="dealImageFile" accept="image/*" style="display: none;" />
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                        <span style="font-size: 0.72rem; color: var(--text-light);">veya</span>
+                        <input type="url" class="form-input" id="dealImage" placeholder="Görsel URL yapıştır..."
+                            style="font-size: 0.78rem; padding: 6px 12px;">
+                    </div>
+                    <input type="hidden" id="uploadedImageUrl" />
+                </div>
+
+                <!-- 📎 Link + Başlık -->
+                <div style="background: #F5F7FA; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px;">
+                    <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-medium); margin-bottom: 10px;">
+                        📎 Ürün Bilgileri</div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <input type="url" class="form-input" id="dealLink"
+                            placeholder="� Ürün linki yapıştır (opsiyonel)">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input type="text" class="form-input" id="dealTitle"
+                            placeholder="📝 Başlık: iPhone 16 128GB - Süper Fırsat!" required minlength="5">
+                    </div>
+                </div>
+
+                <!-- 💰 Fiyat Bölümü -->
+                <div style="background: #F5F7FA; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px;">
+                    <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-medium); margin-bottom: 10px;">
+                        💰 Fiyat Bilgileri</div>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label" style="font-size: 0.75rem;">Fırsat Fiyatı (₺)</label>
+                            <input type="number" class="form-input" id="dealPrice" placeholder="39.999" step="0.01">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label" style="font-size: 0.75rem;">Eski Fiyat (₺)</label>
+                            <input type="number" class="form-input" id="dealOldPrice" placeholder="49.999" step="0.01">
+                        </div>
+                    </div>
+                    <div id="discountPreview"
+                        style="display: none; margin-top: 10px; padding: 8px 14px; background: rgba(255,71,87,0.1); border-radius: var(--radius-md); text-align: center; font-weight: 700; color: var(--coral-vibrant);">
+                    </div>
+                </div>
+
+                <!-- 📁 Detaylar -->
+                <div style="background: #F5F7FA; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px;">
+                    <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-medium); margin-bottom: 10px;">
+                        📁 Detaylar</div>
+                    <div class="form-row" style="margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="text" class="form-input" id="dealStore" placeholder="🏪 Mağaza adı">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <select class="form-select" id="dealCategory">
+                                <option value="">📁 Kategori</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <select class="form-select" id="dealType">
+                                <option value="online">🛒 Online</option>
+                                <option value="store">🏪 Mağaza</option>
+                                <option value="coupon">🎟️ Kupon</option>
+                                <option value="free">🆓 Ücretsiz</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="text" class="form-input" id="dealCoupon" placeholder="🏷️ Kupon kodu">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <textarea class="form-input" id="dealDescription" placeholder="📝 Açıklama, ipucu veya not..."
+                            style="min-height: 70px;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input type="date" class="form-input" id="dealExpiry" placeholder="📅 Bitiş tarihi">
+                        <p class="form-hint">Opsiyonel — fırsatın ne zaman bittiğini belirtin</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-lg" id="submitDealBtn"
+                    style="width: 100%; background: linear-gradient(135deg, #FF4757, #FF6B81); color: white; font-size: 1rem; padding: 14px;">
+                    🔥 Fırsatı Paylaş
+                </button>
+                <p style="text-align: center; font-size: 0.72rem; color: var(--text-light); margin-top: 8px;">Paylaşım
+                    için +5 puan kazanırsın!</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fırsat Detay Modal -->
+    <div class="modal-overlay" id="dealDetailModal">
+        <div class="modal" style="max-width: 720px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detailTitle">Fırsat Detayı</h2>
+                <button class="modal-close" id="detailModalClose">✕</button>
+            </div>
+            <div id="dealDetailContent">
+                <!-- Dinamik içerik -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Onay Modal (native confirm yerine) -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 12px;" id="confirmIcon">⚠️</div>
+            <h3 style="font-size: 1.05rem; margin-bottom: 8px;" id="confirmTitle">Emin misiniz?</h3>
+            <p style="font-size: 0.88rem; color: var(--text-medium); margin-bottom: 20px;" id="confirmMessage">Bu işlem
+                geri alınamaz.</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn btn-secondary" id="confirmCancel" style="min-width: 100px;">İptal</button>
+                <button class="btn" id="confirmOk"
+                    style="min-width: 100px; background: var(--coral-gradient); color: white;">Evet, Sil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/modal.js"></script>
+    <script src="/js/deals.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+
+</html>

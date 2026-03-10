@@ -1,0 +1,189 @@
+/* ============================================================
+   FIRSAT ÜRÜN - Responsive Stilleri
+   ============================================================ */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        padding: var(--space-md);
+    }
+
+    .deals-feed {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .deal-card-image {
+        height: 140px;
+    }
+
+    .sidebar {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+    }
+
+    .header-inner {
+        height: 56px;
+    }
+
+    .search-container {
+        max-width: none;
+    }
+
+    .category-strip {
+        padding: 0 var(--space-md);
+        margin-top: var(--space-md);
+    }
+
+    .sort-tabs {
+        padding: 0 var(--space-md);
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .sort-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .fab {
+        bottom: 16px;
+        right: 16px;
+        padding: 12px 20px;
+        font-size: 0.85rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .notification-panel {
+        width: calc(100vw - 32px);
+        right: -40px;
+    }
+
+    .modal {
+        padding: var(--space-lg);
+        margin: var(--space-md);
+    }
+}
+
+/* Mobil */
+@media (max-width: 480px) {
+    .header {
+        padding: 0 var(--space-md);
+    }
+
+    .deals-feed {
+        grid-template-columns: 1fr;
+    }
+
+    .search-container {
+        display: none;
+    }
+
+    .header-search-mobile {
+        display: flex !important;
+    }
+
+    .sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .deal-card-image {
+        height: 180px;
+    }
+
+    .deal-card-title {
+        font-size: 0.9rem;
+    }
+
+    .fab span.fab-text {
+        display: none;
+    }
+
+    .fab {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .toast {
+        min-width: auto;
+        width: calc(100vw - 48px);
+    }
+
+    .toast-container {
+        right: 16px;
+        left: 16px;
+    }
+}
+
+/* Desktop büyük */
+@media (min-width: 1440px) {
+    .main-content {
+        max-width: 1400px;
+        grid-template-columns: 1fr 340px;
+    }
+
+    .deals-feed {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobil arama */
+.header-search-mobile {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card-solid);
+    padding: var(--space-md);
+    border-bottom: var(--border-light);
+    box-shadow: var(--shadow-md);
+}
+
+.header-search-mobile .search-input {
+    max-width: none;
+}
+
+/* Touch */
+@media (hover: none) {
+    .category-pill {
+        padding: 10px 20px;
+    }
+
+    .sort-tab {
+        padding: 10px 18px;
+    }
+}
+
+/* Print */
+@media print {
+
+    .header,
+    .fab,
+    .sidebar,
+    .toast-container {
+        display: none !important;
+    }
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .deals-feed {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .deal-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+}

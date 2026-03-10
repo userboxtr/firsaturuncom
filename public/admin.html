@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRSAT ÜRÜN - Admin Panel</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --success: #00B894;
+            --danger: #FF4757;
+            --warning: #FDCB6E;
+            --info: #0984E3;
+            --dark: #1A1A2E;
+            --text: #2D3436;
+            --text-light: #888;
+            --bg: #F0F2F5;
+            --card: #FFFFFF;
+            --border: #E8ECF0;
+            --sidebar-width: 260px;
+            --header-height: 60px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ═══ SIDEBAR ═══ */
+        .admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #1A1A2E 0%, #16213E 100%);
+            color: white;
+            padding: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-brand {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-brand-text {
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .sidebar-brand-text span {
+            color: var(--primary-light);
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+        }
+
+        .sidebar-section {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 16px 12px 6px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2px;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        .sidebar-item.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-item-icon {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-badge {
+            margin-left: auto;
+            background: var(--danger);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        /* ═══ MAIN AREA ═══ */
+        .admin-main {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .admin-header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .admin-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-header-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .admin-content {
+            padding: 24px 28px;
+        }
+
+        /* ═══ CARDS ═══ */
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .stat-card-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .stat-card-label {
+            font-size: 0.72rem;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        /* ═══ TABLE ═══ */
+        .admin-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .admin-card-header {
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .admin-card-body {
+            padding: 0;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+            background: #FAFBFC;
+        }
+
+        .admin-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #F5F5F5;
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover td {
+            background: #FAFBFC;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .badge-success {
+            background: rgba(0, 184, 148, 0.12);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(253, 203, 110, 0.25);
+            color: #E67E22;
+        }
+
+        .badge-danger {
+            background: rgba(255, 71, 87, 0.12);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(9, 132, 227, 0.12);
+            color: var(--info);
+        }
+
+        .badge-purple {
+            background: rgba(108, 92, 231, 0.12);
+            color: var(--primary);
+        }
+
+        /* ═══ BUTTONS ═══ */
+        .btn-admin {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.7rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* ═══ FORMS ═══ */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 9px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-family: inherit;
+            transition: border 0.2s;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-hint {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* ═══ SECTIONS ═══ */
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        /* ═══ FILTER BAR ═══ */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar .form-input,
+        .filter-bar .form-select {
+            width: auto;
+            max-width: 200px;
+            padding: 7px 12px;
+        }
+
+        /* ═══ TOAST ═══ */
+        .admin-toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .admin-toast {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 8px;
+            animation: slideIn 0.3s;
+        }
+
+        .admin-toast.success {
+            background: var(--success);
+        }
+
+        .admin-toast.error {
+            background: var(--danger);
+        }
+
+        /* ═══ SETTINGS CARD ═══ */
+        .settings-section {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .settings-section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .settings-toggle-label div:first-child {
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .settings-toggle-label div:last-child {
+            font-size: 0.72rem;
+            color: var(--text-light);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #DDD;
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: var(--success);
+        }
+
+        .toggle-switch input:checked+.toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        /* ═══ BACK TO SITE ═══ */
+        .back-to-site {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            margin: 8px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            transition: all 0.2s;
+        }
+
+        .back-to-site:hover {
+            color: white;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ═══ LOGIN SCREEN ═══ */
+        .admin-login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .admin-login-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .admin-login-card h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .admin-login-card p {
+            text-align: center;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 28px;
+        }
+
+        .admin-login-card .form-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+        }
+
+        .admin-login-card .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .admin-login-card .form-input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+        }
+
+        .admin-login-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 6px;
+        }
+
+        .admin-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .admin-login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .admin-login-error {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            color: #FF6B81;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+            .stat-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ADMIN LOGIN SCREEN -->
+    <div class="admin-login-overlay" id="adminLoginOverlay">
+        <div class="admin-login-card">
+            <div style="text-align:center;font-size:3rem;margin-bottom:12px;">🛡️</div>
+            <h1>FIRSAT ADMIN</h1>
+            <p>Yönetim paneline erişmek için giriş yapın</p>
+            <div class="admin-login-error" id="adminLoginError"></div>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <input type="email" class="form-input" id="adminEmail" placeholder="📧 E-posta" required
+                        autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" id="adminPassword" placeholder="🔒 Şifre" required
+                        autocomplete="current-password">
+                </div>
+                <button type="submit" class="admin-login-btn" id="adminLoginBtn">🔐 Giriş Yap</button>
+            </form>
+            <a href="/"
+                style="display:block;text-align:center;margin-top:16px;font-size:0.78rem;color:rgba(255,255,255,0.4);text-decoration:none;">←
+                Ana Sayfaya Dön</a>
+        </div>
+    </div>
+    <!-- SIDEBAR -->
+    <nav class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <span class="sidebar-brand-icon">🛡️</span>
+            <span class="sidebar-brand-text">FIRSAT <span>ADMIN</span></span>
+        </div>
+        <div class="sidebar-nav">
+            <div class="sidebar-item active" data-section="dashboard">
+                <span class="sidebar-item-icon">📊</span> Dashboard
+            </div>
+
+            <div class="sidebar-section">Yönetim</div>
+            <div class="sidebar-item" data-section="users">
+                <span class="sidebar-item-icon">👥</span> Üyeler
+                <span class="sidebar-badge hidden" id="pendingUsersBadge">0</span>
+            </div>
+            <div class="sidebar-item" data-section="deals">
+                <span class="sidebar-item-icon">🔥</span> Fırsatlar
+                <span class="sidebar-badge hidden" id="pendingDealsBadge">0</span>
+            </div>
+            <div class="sidebar-item" data-section="comments">
+                <span class="sidebar-item-icon">💬</span> Yorumlar
+            </div>
+            <div class="sidebar-item" data-section="categories">
+                <span class="sidebar-item-icon">📁</span> Kategoriler
+            </div>
+
+            <div class="sidebar-section">Yapılandırma</div>
+            <div class="sidebar-item" data-section="analytics">
+                <span class="sidebar-item-icon">📈</span> Analitik
+            </div>
+            <div class="sidebar-item" data-section="reports">
+                <span class="sidebar-item-icon">🚩</span> Raporlar
+                <span class="sidebar-badge hidden" id="pendingReportsBadge">0</span>
+            </div>
+            <div class="sidebar-item" data-section="ai-settings">
+                <span class="sidebar-item-icon">🤖</span> AI Ayarları
+            </div>
+            <div class="sidebar-item" data-section="site-settings">
+                <span class="sidebar-item-icon">⚙️</span> Site Ayarları
+            </div>
+            <div class="sidebar-item" data-section="investors">
+                <span class="sidebar-item-icon">💰</span> Yatırımcılar
+            </div>
+
+            <a href="/" class="back-to-site">← Siteye Dön</a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="admin-header-title" id="sectionTitle">📊 Dashboard</div>
+            <div class="admin-header-actions">
+                <div class="admin-header-user">
+                    <span id="adminUsername">Admin</span>
+                    <span style="font-size:1.2rem;">🛡️</span>
+                    <button class="btn-admin btn-outline" onclick="AdminApp.logout()" style="margin-left:8px;">🚪
+                        Çıkış</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- ═══ DASHBOARD ═══ -->
+            <section class="admin-section active" id="section-dashboard">
+                <div class="stat-cards" id="dashboardStats"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <div class="admin-card-title">🕐 Son Fırsatlar</div>
+                        </div>
+                        <div class="admin-card-body" id="recentActivityList" style="padding: 12px 16px;"></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <div class="admin-card-title">👤 Son Üyeler</div>
+                        </div>
+                        <div class="admin-card-body" id="recentUsersList" style="padding: 12px 16px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ ÜYELER ═══ -->
+            <section class="admin-section" id="section-users">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">👥 Üye Yönetimi</div>
+                        <div class="filter-bar">
+                            <input type="text" class="form-input" id="userSearch" placeholder="🔍 Üye ara...">
+                            <select class="form-select" id="userStatusFilter">
+                                <option value="">Tüm Durumlar</option>
+                                <option value="active">✅ Aktif</option>
+                                <option value="pending">⏳ Bekleyen</option>
+                                <option value="banned">🚫 Banlı</option>
+                            </select>
+                            <select class="form-select" id="userRoleFilter">
+                                <option value="">Tüm Roller</option>
+                                <option value="admin">🛡️ Admin</option>
+                                <option value="moderator">🔰 Moderatör</option>
+                                <option value="user">👤 Kullanıcı</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı</th>
+                                    <th>E-posta</th>
+                                    <th>Rol</th>
+                                    <th>Durum</th>
+                                    <th>Puan</th>
+                                    <th>Fırsatlar</th>
+                                    <th>Kayıt</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ FIRSATLAR ═══ -->
+            <section class="admin-section" id="section-deals">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">🔥 Fırsat Yönetimi</div>
+                        <div class="filter-bar">
+                            <input type="text" class="form-input" id="dealSearch" placeholder="🔍 Fırsat ara...">
+                            <select class="form-select" id="dealStatusFilter">
+                                <option value="">Tüm Durumlar</option>
+                                <option value="active">✅ Aktif</option>
+                                <option value="pending">⏳ Bekleyen</option>
+                                <option value="rejected">❌ Reddedildi</option>
+                                <option value="expired">⏰ Süresi Doldu</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Başlık</th>
+                                    <th>Mağaza</th>
+                                    <th>Fiyat</th>
+                                    <th>Kategori</th>
+                                    <th>Paylaşan</th>
+                                    <th>Durum</th>
+                                    <th>Oylar</th>
+                                    <th>Tarih</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dealsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ YORUMLAR ═══ -->
+            <section class="admin-section" id="section-comments">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">💬 Yorum Moderasyonu</div>
+                    </div>
+                    <div class="admin-card-body">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı</th>
+                                    <th>Yorum</th>
+                                    <th>Fırsat</th>
+                                    <th>Tarih</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ KATEGORİLER ═══ -->
+            <section class="admin-section" id="section-categories">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">📁 Kategori Yönetimi</div>
+                        <button class="btn-admin btn-primary" onclick="AdminApp.showAddCategory()">+ Kategori
+                            Ekle</button>
+                    </div>
+                    <div class="admin-card-body">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Sıra</th>
+                                    <th>İkon</th>
+                                    <th>Ad</th>
+                                    <th>Slug</th>
+                                    <th>Fırsat Sayısı</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ AI AYARLARI ═══ -->
+            <section class="admin-section" id="section-ai-settings">
+                <div class="settings-section">
+                    <div class="settings-section-title">🤖 AI Yapılandırması</div>
+
+                    <div class="settings-toggle">
+                        <div class="settings-toggle-label">
+                            <div>AI Doğrulama</div>
+                            <div>Fırsatları yapay zeka ile otomatik doğrula</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="aiEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label class="form-label">AI Sağlayıcı</label>
+                            <select class="form-select" id="aiProvider">
+                                <option value="none">Kapalı</option>
+                                <option value="groq">Groq (Ücretsiz, Hızlı)</option>
+                                <option value="openai">OpenAI (GPT-4)</option>
+                                <option value="gemini">Google Gemini</option>
+                                <option value="ollama">Ollama (Lokal)</option>
+                            </select>
+                        </div>
+
+                        <div id="apiKeySection">
+                            <div class="form-group">
+                                <label class="form-label">API Anahtarı</label>
+                                <input type="password" class="form-input" id="aiApiKey"
+                                    placeholder="sk-... veya gsk-...">
+                                <p class="form-hint">API anahtarınız güvenli şekilde saklanır</p>
+                            </div>
+                        </div>
+
+                        <div id="localAiSection" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">Ollama URL</label>
+                                <input type="url" class="form-input" id="aiLocalUrl"
+                                    placeholder="http://localhost:11434">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Model Adı</label>
+                            <input type="text" class="form-input" id="aiModel"
+                                placeholder="llama3, gpt-4, gemini-pro...">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 16px;">
+                            <button class="btn-admin btn-primary" onclick="AdminApp.saveAiSettings()">💾 Kaydet</button>
+                            <button class="btn-admin btn-info" onclick="AdminApp.testAi()">🧪 Bağlantı Test</button>
+                        </div>
+                        <div id="aiTestResult" style="margin-top: 12px; font-size: 0.82rem; display: none;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ SİTE AYARLARI ═══ -->
+            <!-- ═══════════════ ANALİTİK ═══════════════ -->
+            <section class="admin-section" id="section-analytics">
+                <div class="section-header">
+                    <h2>📈 Analitik</h2>
+                </div>
+                <div id="analyticsContent"
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+                    <div class="settings-section" style="padding:20px;">
+                        <div class="settings-section-title">Son 7 Gün — Fırsatlar</div>
+                        <canvas id="chartDeals" height="200"></canvas>
+                    </div>
+                    <div class="settings-section" style="padding:20px;">
+                        <div class="settings-section-title">Son 7 Gün — Yeni Üyeler</div>
+                        <canvas id="chartUsers" height="200"></canvas>
+                    </div>
+                    <div class="settings-section" style="padding:20px;">
+                        <div class="settings-section-title">Top 5 Mağaza</div>
+                        <canvas id="chartStores" height="200"></canvas>
+                    </div>
+                    <div class="settings-section" style="padding:20px;">
+                        <div class="settings-section-title">Kategori Dağılımı</div>
+                        <canvas id="chartCategories" height="200"></canvas>
+                    </div>
+                    <div class="settings-section" style="padding:20px;grid-column:1/-1;">
+                        <div class="settings-section-title">Genel Bakış</div>
+                        <div id="analyticsOverview" style="display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════ RAPORLAR ═══════════════ -->
+            <section class="admin-section" id="section-reports">
+                <div class="section-header">
+                    <h2>🚩 Raporlar</h2>
+                    <select id="reportStatusFilter"
+                        style="padding:6px 12px;border-radius:8px;border:1px solid #ddd;font-size:0.85rem;">
+                        <option value="pending">Bekleyen</option>
+                        <option value="resolved">Çözülen</option>
+                        <option value="dismissed">Reddedilen</option>
+                    </select>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Raporlayan</th>
+                                <th>Tür</th>
+                                <th>Hedef</th>
+                                <th>Neden</th>
+                                <th>Tarih</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align:center;padding:24px;color:#888;">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-site-settings">
+                <div class="settings-section">
+                    <div class="settings-section-title">⚙️ Genel Ayarlar</div>
+
+                    <div class="form-group">
+                        <label class="form-label">Site Adı</label>
+                        <input type="text" class="form-input" id="siteName" value="FIRSAT ÜRÜN">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Site Açıklaması</label>
+                        <input type="text" class="form-input" id="siteDescription">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🎨 Tema Renk Paleti</label>
+                        <div id="themePresetSelector" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+                            <div class="theme-preset-option" data-theme="mint"
+                                style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#2BC4B4,#0EB89F);cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.65rem;"
+                                title="Mint">✓</div>
+                            <div class="theme-preset-option" data-theme="ocean"
+                                style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#3B82F6,#2563EB);cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.65rem;"
+                                title="Ocean"></div>
+                            <div class="theme-preset-option" data-theme="sunset"
+                                style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#F97316,#EF4444);cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.65rem;"
+                                title="Sunset"></div>
+                            <div class="theme-preset-option" data-theme="purple"
+                                style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#A855F7);cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.65rem;"
+                                title="Purple"></div>
+                            <div class="theme-preset-option" data-theme="rose"
+                                style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#EC4899,#F472B6);cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.65rem;"
+                                title="Rose"></div>
+                            <div class="theme-preset-option" data-theme="midnight"
+                                style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#14B8A6,#06B6D4);cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.65rem;"
+                                title="Midnight"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-toggle">
+                        <div class="settings-toggle-label">
+                            <div>Üye Kayıt Onayı</div>
+                            <div>Yeni üyeler admin onayı beklesin</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="userApprovalRequired">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-toggle">
+                        <div class="settings-toggle-label">
+                            <div>Fırsat Onayı</div>
+                            <div>Paylaşılan fırsatlar admin onayı beklesin</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dealApprovalRequired">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-toggle">
+                        <div class="settings-toggle-label">
+                            <div>Bakım Modu</div>
+                            <div>Siteyi geçici olarak kapat</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="maintenanceMode">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Sayfa Başına Fırsat</label>
+                            <input type="number" class="form-input" id="dealsPerPage" value="15">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Maks Upload (MB)</label>
+                            <input type="number" class="form-input" id="maxUploadSize" value="5">
+                        </div>
+                    </div>
+
+                    <button class="btn-admin btn-primary" onclick="AdminApp.saveSiteSettings()"
+                        style="margin-top: 10px;">💾 Ayarları Kaydet</button>
+                </div>
+            </section>
+
+            <!-- ═══════════════ YATIRIMCILAR ═══════════════ -->
+            <section class="admin-section" id="section-investors">
+                <div class="section-header">
+                    <h2>💰 Yatırımcı Başvuruları</h2>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>E-posta</th>
+                                <th>Telefon</th>
+                                <th>Şirket</th>
+                                <th>Mesaj</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="investorsTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align:center;padding:24px;color:#888;">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="admin-toast-container" id="adminToastContainer"></div>
+
+    <script>
+        const AdminApp = {
+            token: localStorage.getItem('fu_token'),
+            settings: {},
+
+            async init() {
+                // Login form handler
+                document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleLogin();
+                });
+
+                if (!this.token) {
+                    this.showLogin();
+                    return;
+                }
+
+                // Admin mi kontrol et
+                try {
+                    const res = await this.api('GET', '/auth/me');
+                    if (res.role !== 'admin') {
+                        this.showLogin('Bu hesap admin yetkisine sahip değil.');
+                        return;
+                    }
+                    document.getElementById('adminUsername').textContent = res.username;
+                    this.hideLogin();
+                } catch (e) {
+                    this.showLogin();
+                    return;
+                }
+
+                this.bindNav();
+                this.loadDashboard();
+            },
+
+            showLogin(errorMsg = '') {
+                document.getElementById('adminLoginOverlay').style.display = 'flex';
+                document.getElementById('adminSidebar').style.display = 'none';
+                document.querySelector('.admin-main').style.display = 'none';
+                if (errorMsg) {
+                    document.getElementById('adminLoginError').textContent = errorMsg;
+                    document.getElementById('adminLoginError').style.display = '';
+                }
+            },
+
+            hideLogin() {
+                document.getElementById('adminLoginOverlay').style.display = 'none';
+                document.getElementById('adminSidebar').style.display = '';
+                document.querySelector('.admin-main').style.display = '';
+            },
+
+            async handleLogin() {
+                const email = document.getElementById('adminEmail').value;
+                const password = document.getElementById('adminPassword').value;
+                const btn = document.getElementById('adminLoginBtn');
+                const errorEl = document.getElementById('adminLoginError');
+
+                btn.disabled = true;
+                btn.textContent = '⏳ Giriş yapılıyor...';
+                errorEl.style.display = 'none';
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.error || 'Giriş başarısız.');
+
+                    // Token kaydet
+                    this.token = data.token;
+                    localStorage.setItem('fu_token', data.token);
+                    if (data.user) localStorage.setItem('fu_user', JSON.stringify(data.user));
+
+                    // Admin mi kontrol et
+                    const me = await this.api('GET', '/auth/me');
+                    if (me.role !== 'admin') {
+                        errorEl.textContent = '❌ Bu hesap admin yetkisine sahip değil.';
+                        errorEl.style.display = '';
+                        btn.disabled = false;
+                        btn.textContent = '🔐 Giriş Yap';
+                        return;
+                    }
+
+                    document.getElementById('adminUsername').textContent = me.username;
+                    this.hideLogin();
+                    this.bindNav();
+                    this.loadDashboard();
+                    this.toast('Hoş geldiniz, ' + me.username + '! 🛡️');
+                } catch (e) {
+                    errorEl.textContent = '❌ ' + e.message;
+                    errorEl.style.display = '';
+                    btn.disabled = false;
+                    btn.textContent = '🔐 Giriş Yap';
+                }
+            },
+
+            logout() {
+                localStorage.removeItem('fu_token');
+                localStorage.removeItem('fu_user');
+                this.token = null;
+                this.showLogin();
+                this.toast('Çıkış yapıldı.');
+            },
+
+            async api(method, url, body = null) {
+                const opts = {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` }
+                };
+                if (body) opts.body = JSON.stringify(body);
+                const res = await fetch('/api' + url, opts);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Hata');
+                return data;
+            },
+
+            toast(msg, type = 'success') {
+                const container = document.getElementById('adminToastContainer');
+                const el = document.createElement('div');
+                el.className = `admin-toast ${type}`;
+                el.textContent = msg;
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 3000);
+            },
+
+            bindNav() {
+                document.querySelectorAll('.sidebar-item[data-section]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const section = item.dataset.section;
+                        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+                        document.getElementById(`section-${section}`).classList.add('active');
+
+                        const titles = {
+                            dashboard: '📊 Dashboard',
+                            users: '👥 Üye Yönetimi',
+                            deals: '🔥 Fırsat Yönetimi',
+                            comments: '💬 Yorum Moderasyonu',
+                            categories: '📁 Kategoriler',
+                            analytics: '📈 Analitik',
+                            reports: '🚩 Raporlar',
+                            investors: '💰 Yatırımcılar',
+                            'ai-settings': '🤖 AI Ayarları',
+                            'site-settings': '⚙️ Site Ayarları'
+                        };
+                        document.getElementById('sectionTitle').textContent = titles[section] || section;
+
+                        const loaders = {
+                            dashboard: () => this.loadDashboard(),
+                            users: () => this.loadUsers(),
+                            deals: () => this.loadDeals(),
+                            comments: () => this.loadComments(),
+                            categories: () => this.loadCategories(),
+                            analytics: () => this.loadAnalytics(),
+                            reports: () => this.loadReports(),
+                            investors: () => this.loadInvestors(),
+                            'ai-settings': () => this.loadSettings(),
+                            'site-settings': () => this.loadSettings()
+                        };
+                        loaders[section]?.();
+                    });
+                });
+
+                // Filtreler
+                ['userSearch', 'userStatusFilter', 'userRoleFilter'].forEach(id => {
+                    document.getElementById(id)?.addEventListener('input', () => this.loadUsers());
+                    document.getElementById(id)?.addEventListener('change', () => this.loadUsers());
+                });
+                ['dealSearch', 'dealStatusFilter'].forEach(id => {
+                    document.getElementById(id)?.addEventListener('input', () => this.loadDeals());
+                    document.getElementById(id)?.addEventListener('change', () => this.loadDeals());
+                });
+
+                // AI provider değişince göster/gizle
+                document.getElementById('aiProvider')?.addEventListener('change', (e) => {
+                    document.getElementById('apiKeySection').style.display = e.target.value === 'ollama' || e.target.value === 'none' ? 'none' : '';
+                    document.getElementById('localAiSection').style.display = e.target.value === 'ollama' ? '' : 'none';
+                });
+
+                // Rapor filtresi
+                document.getElementById('reportStatusFilter')?.addEventListener('change', () => this.loadReports());
+            },
+
+            // ═══ DASHBOARD ═══
+            async loadDashboard() {
+                try {
+                    const data = await this.api('GET', '/admin/dashboard');
+                    const s = data.stats;
+
+                    // Badge'lar
+                    if (s.pending_users > 0) {
+                        document.getElementById('pendingUsersBadge').textContent = s.pending_users;
+                        document.getElementById('pendingUsersBadge').classList.remove('hidden');
+                    }
+                    if (s.pending_deals > 0) {
+                        document.getElementById('pendingDealsBadge').textContent = s.pending_deals;
+                        document.getElementById('pendingDealsBadge').classList.remove('hidden');
+                    }
+
+                    document.getElementById('dashboardStats').innerHTML = `
+                    <div class="stat-card"><div class="stat-card-icon" style="background:rgba(9,132,227,0.12);">👥</div><div><div class="stat-card-value">${s.total_users}</div><div class="stat-card-label">Toplam Üye</div></div></div>
+                    <div class="stat-card"><div class="stat-card-icon" style="background:rgba(0,184,148,0.12);">🔥</div><div><div class="stat-card-value">${s.total_deals}</div><div class="stat-card-label">Toplam Fırsat</div></div></div>
+                    <div class="stat-card"><div class="stat-card-icon" style="background:rgba(108,92,231,0.12);">📅</div><div><div class="stat-card-value">${s.today_deals}</div><div class="stat-card-label">Bugünkü Fırsat</div></div></div>
+                    <div class="stat-card"><div class="stat-card-icon" style="background:rgba(253,203,110,0.3);">💬</div><div><div class="stat-card-value">${s.total_comments}</div><div class="stat-card-label">Toplam Yorum</div></div></div>
+                    <div class="stat-card"><div class="stat-card-icon" style="background:rgba(255,71,87,0.12);">⏳</div><div><div class="stat-card-value">${s.pending_users}</div><div class="stat-card-label">Bekleyen Üye</div></div></div>
+                    <div class="stat-card"><div class="stat-card-icon" style="background:rgba(255,165,0,0.12);">📋</div><div><div class="stat-card-value">${s.pending_deals}</div><div class="stat-card-label">Bekleyen Fırsat</div></div></div>
+                `;
+
+                    // Son fırsatlar
+                    document.getElementById('recentActivityList').innerHTML = data.recentActivity.map(a => `
+                    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F5F5F5;">
+                        <span style="font-size:0.75rem;color:var(--text-light);">@${a.username}</span>
+                        <span style="font-size:0.78rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.text}</span>
+                    </div>
+                `).join('') || '<p style="color:var(--text-light);font-size:0.82rem;">Henüz aktivite yok</p>';
+
+                    // Son üyeler
+                    document.getElementById('recentUsersList').innerHTML = data.recentUsers.map(u => {
+                        const statusBadge = u.status === 'active' ? 'badge-success' : u.status === 'banned' ? 'badge-danger' : 'badge-warning';
+                        return `
+                    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F5F5F5;">
+                        <span style="font-weight:600;font-size:0.82rem;">@${u.username}</span>
+                        <span class="badge ${statusBadge}">${u.status}</span>
+                        <span style="margin-left:auto;font-size:0.72rem;color:var(--text-light);">${u.points}p</span>
+                    </div>
+                    `;
+                    }).join('') || '<p style="color:var(--text-light);font-size:0.82rem;">Henüz üye yok</p>';
+                } catch (e) {
+                    this.toast('Dashboard yüklenemedi: ' + e.message, 'error');
+                }
+            },
+
+            // ═══ USERS ═══
+            async loadUsers() {
+                try {
+                    const search = document.getElementById('userSearch')?.value || '';
+                    const status = document.getElementById('userStatusFilter')?.value || '';
+                    const role = document.getElementById('userRoleFilter')?.value || '';
+
+                    const params = new URLSearchParams({ limit: 50 });
+                    if (search) params.set('search', search);
+                    if (status) params.set('status', status);
+                    if (role) params.set('role', role);
+
+                    const data = await this.api('GET', `/admin/users?${params}`);
+
+                    document.getElementById('usersTableBody').innerHTML = data.users.map(u => {
+                        const roleBadge = u.role === 'admin' ? 'badge-purple' : u.role === 'moderator' ? 'badge-info' : 'badge-success';
+                        const statusBadge = u.status === 'active' ? 'badge-success' : u.status === 'banned' ? 'badge-danger' : 'badge-warning';
+                        const roleLabel = u.role === 'admin' ? '🛡️ Admin' : u.role === 'moderator' ? '🔰 Mod' : '👤 Üye';
+                        const statusLabel = u.status === 'active' ? '✅ Aktif' : u.status === 'banned' ? '🚫 Banlı' : '⏳ Bekleyen';
+
+                        return `<tr>
+                        <td><strong>${u.username}</strong><br><span style="font-size:0.7rem;color:var(--text-light);">${u.levelInfo?.badge || '🌱'} ${u.levelInfo?.label || 'Çaylak'}</span></td>
+                        <td style="font-size:0.75rem;">${u.email}</td>
+                        <td><span class="badge ${roleBadge}">${roleLabel}</span></td>
+                        <td><span class="badge ${statusBadge}">${statusLabel}</span></td>
+                        <td>${u.points}</td>
+                        <td>${u.deal_count}</td>
+                        <td style="font-size:0.72rem;">${new Date(u.created_at).toLocaleDateString('tr-TR')}</td>
+                        <td>
+                            <div class="btn-group">
+                                ${u.status === 'pending' ? `<button class="btn-admin btn-sm btn-success" onclick="AdminApp.userAction('${u.id}','status','active')">✅</button>` : ''}
+                                ${u.status !== 'banned' ? `<button class="btn-admin btn-sm btn-danger" onclick="AdminApp.userAction('${u.id}','status','banned')">🚫</button>` : `<button class="btn-admin btn-sm btn-success" onclick="AdminApp.userAction('${u.id}','status','active')">🔓</button>`}
+                                <select class="form-select" style="width:auto;padding:3px 6px;font-size:0.68rem;" onchange="AdminApp.userAction('${u.id}','role',this.value)">
+                                    <option value="user" ${u.role === 'user' ? 'selected' : ''}>Üye</option>
+                                    <option value="moderator" ${u.role === 'moderator' ? 'selected' : ''}>Mod</option>
+                                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>`;
+                    }).join('') || '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-light);">Üye bulunamadı</td></tr>';
+                } catch (e) { this.toast('Üyeler yüklenemedi', 'error'); }
+            },
+
+            async userAction(id, type, value) {
+                try {
+                    await this.api('PUT', `/admin/users/${id}/${type}`, { [type]: value });
+                    this.toast(type === 'status' ? 'Durum güncellendi' : 'Rol güncellendi');
+                    this.loadUsers();
+                } catch (e) { this.toast(e.message, 'error'); }
+            },
+
+            // ═══ DEALS ═══
+            async loadDeals() {
+                try {
+                    const search = document.getElementById('dealSearch')?.value || '';
+                    const status = document.getElementById('dealStatusFilter')?.value || '';
+
+                    const params = new URLSearchParams({ limit: 50 });
+                    if (search) params.set('search', search);
+                    if (status) params.set('status', status);
+
+                    const data = await this.api('GET', `/admin/deals?${params}`);
+
+                    document.getElementById('dealsTableBody').innerHTML = data.deals.map(d => {
+                        const statusBadge = d.status === 'active' ? 'badge-success' : d.status === 'pending' ? 'badge-warning' : d.status === 'rejected' ? 'badge-danger' : 'badge-info';
+                        const statusLabel = d.status === 'active' ? '✅ Aktif' : d.status === 'pending' ? '⏳ Bekleyen' : d.status === 'rejected' ? '❌ Red' : '⏰ Süresi';
+                        const price = d.price ? `${Number(d.price).toLocaleString('tr-TR')} ₺` : '-';
+
+                        return `<tr>
+                        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><strong>${d.title}</strong></td>
+                        <td>${d.store_name || '-'}</td>
+                        <td style="font-weight:700;color:var(--danger);">${price}</td>
+                        <td>${d.category_icon || ''} ${d.category_name || '-'}</td>
+                        <td>@${d.username || '?'}</td>
+                        <td><span class="badge ${statusBadge}">${statusLabel}</span></td>
+                        <td>👍${d.upvotes} 👎${d.downvotes}</td>
+                        <td style="font-size:0.72rem;">${new Date(d.created_at).toLocaleDateString('tr-TR')}</td>
+                        <td>
+                            <div class="btn-group">
+                                ${d.status !== 'active' ? `<button class="btn-admin btn-sm btn-success" onclick="AdminApp.dealAction('${d.id}','active')">✅</button>` : ''}
+                                ${d.status !== 'rejected' ? `<button class="btn-admin btn-sm btn-warning" onclick="AdminApp.dealAction('${d.id}','rejected')">❌</button>` : ''}
+                                <button class="btn-admin btn-sm btn-danger" onclick="AdminApp.deleteDeal('${d.id}')">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                    }).join('') || '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-light);">Fırsat bulunamadı</td></tr>';
+                } catch (e) { this.toast('Fırsatlar yüklenemedi', 'error'); }
+            },
+
+            async dealAction(id, status) {
+                try {
+                    await this.api('PUT', `/admin/deals/${id}/status`, { status });
+                    this.toast('Fırsat durumu güncellendi');
+                    this.loadDeals();
+                } catch (e) { this.toast(e.message, 'error'); }
+            },
+
+            async deleteDeal(id) {
+                if (!confirm('Bu fırsatı silmek istediğinize emin misiniz?')) return;
+                try {
+                    await this.api('DELETE', `/admin/deals/${id}`);
+                    this.toast('Fırsat silindi');
+                    this.loadDeals();
+                } catch (e) { this.toast(e.message, 'error'); }
+            },
+
+            // ═══ COMMENTS ═══
+            async loadComments() {
+                try {
+                    const data = await this.api('GET', '/admin/comments?limit=50');
+                    document.getElementById('commentsTableBody').innerHTML = data.comments.map(c => `
+                    <tr>
+                        <td><strong>@${c.username || '?'}</strong></td>
+                        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.content}</td>
+                        <td style="font-size:0.72rem;">${c.deal_title || '-'}</td>
+                        <td style="font-size:0.72rem;">${new Date(c.created_at).toLocaleDateString('tr-TR')}</td>
+                        <td><button class="btn-admin btn-sm btn-danger" onclick="AdminApp.deleteComment('${c.id}')">🗑️</button></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-light);">Yorum yok</td></tr>';
+                } catch (e) { this.toast('Yorumlar yüklenemedi', 'error'); }
+            },
+
+            async deleteComment(id) {
+                if (!confirm('Bu yorumu silmek istediğinize emin misiniz?')) return;
+                try {
+                    await this.api('DELETE', `/admin/comments/${id}`);
+                    this.toast('Yorum silindi');
+                    this.loadComments();
+                } catch (e) { this.toast(e.message, 'error'); }
+            },
+
+            // ═══ CATEGORIES ═══
+            async loadCategories() {
+                try {
+                    const cats = await this.api('GET', '/categories');
+                    document.getElementById('categoriesTableBody').innerHTML = cats.map(c => `
+                    <tr>
+                        <td>${c.sort_order}</td>
+                        <td style="font-size:1.3rem;">${c.icon}</td>
+                        <td><strong>${c.name}</strong></td>
+                        <td style="font-size:0.75rem;color:var(--text-light);">${c.slug}</td>
+                        <td>-</td>
+                        <td><button class="btn-admin btn-sm btn-danger" onclick="AdminApp.deleteCategory(${c.id})">🗑️</button></td>
+                    </tr>
+                `).join('');
+                } catch (e) { this.toast('Kategoriler yüklenemedi', 'error'); }
+            },
+
+            showAddCategory() {
+                const name = prompt('Kategori adı:');
+                if (!name) return;
+                const icon = prompt('İkon (emoji):', '📦');
+                const slug = name.toLowerCase().replace(/[^a-z0-9ğüşöçı]/g, '-').replace(/-+/g, '-');
+                const order = prompt('Sıra numarası:', '13');
+                this.api('POST', '/admin/categories', { name, slug, icon: icon || '📦', sort_order: parseInt(order) || 0 })
+                    .then(() => { this.toast('Kategori eklendi'); this.loadCategories(); })
+                    .catch(e => this.toast(e.message, 'error'));
+            },
+
+            async deleteCategory(id) {
+                if (!confirm('Bu kategoriyi silmek istediğinize emin misiniz?')) return;
+                try {
+                    await this.api('DELETE', `/admin/categories/${id}`);
+                    this.toast('Kategori silindi');
+                    this.loadCategories();
+                } catch (e) { this.toast(e.message, 'error'); }
+            },
+
+            // ═══ ANALİTİK ═══
+            _charts: {},
+            async loadAnalytics() {
+                try {
+                    const data = await this.api('GET', '/admin/analytics');
+
+                    // Mevcut grafikleri temizle
+                    Object.values(this._charts).forEach(c => c.destroy?.());
+                    this._charts = {};
+
+                    const chartColors = {
+                        mint: 'rgba(86, 198, 192, 0.8)',
+                        mintBg: 'rgba(86, 198, 192, 0.15)',
+                        purple: 'rgba(108, 92, 231, 0.8)',
+                        purpleBg: 'rgba(108, 92, 231, 0.15)',
+                        coral: 'rgba(255, 107, 107, 0.8)'
+                    };
+
+                    // Fırsat grafiği
+                    const dealCtx = document.getElementById('chartDeals');
+                    if (dealCtx) {
+                        this._charts.deals = new Chart(dealCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: data.dailyStats.map(d => d.date?.slice(5) || ''),
+                                datasets: [{ label: 'Fırsat', data: data.dailyStats.map(d => d.deal_count), backgroundColor: chartColors.mint, borderRadius: 6 }]
+                            },
+                            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                        });
+                    }
+
+                    // Üye grafiği
+                    const userCtx = document.getElementById('chartUsers');
+                    if (userCtx) {
+                        this._charts.users = new Chart(userCtx, {
+                            type: 'line',
+                            data: {
+                                labels: data.dailyUsers.map(d => d.date?.slice(5) || ''),
+                                datasets: [{ label: 'Yeni Üye', data: data.dailyUsers.map(d => d.user_count), borderColor: chartColors.purple, backgroundColor: chartColors.purpleBg, fill: true, tension: 0.4 }]
+                            },
+                            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                        });
+                    }
+
+                    // Top mağazalar
+                    const storeCtx = document.getElementById('chartStores');
+                    if (storeCtx) {
+                        this._charts.stores = new Chart(storeCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: data.topStores.map(s => s.store_name),
+                                datasets: [{ data: data.topStores.map(s => s.count), backgroundColor: ['#56C6C0', '#6C5CE7', '#FF6B6B', '#FECA57', '#48DBFB'] }]
+                            },
+                            options: { responsive: true }
+                        });
+                    }
+
+                    // Kategori dağılımı
+                    const catCtx = document.getElementById('chartCategories');
+                    if (catCtx) {
+                        this._charts.categories = new Chart(catCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: data.categoryStats.map(c => `${c.icon || ''} ${c.name}`),
+                                datasets: [{ label: 'Fırsat', data: data.categoryStats.map(c => c.count), backgroundColor: '#6C5CE7', borderRadius: 6 }]
+                            },
+                            options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+                        });
+                    }
+
+                    // Genel bakış kartları
+                    const ov = data.overview || {};
+                    document.getElementById('analyticsOverview').innerHTML = [
+                        { icon: '👥', label: 'Aktif Üye', val: ov.active_users || 0 },
+                        { icon: '⏳', label: 'Onay Bekleyen', val: ov.pending_users || 0 },
+                        { icon: '🔥', label: 'Aktif Fırsat', val: ov.active_deals || 0 },
+                        { icon: '🚩', label: 'Bekleyen Rapor', val: ov.pending_reports || 0 },
+                        { icon: '👁', label: 'Toplam Görüntülenme', val: ov.total_views || 0 }
+                    ].map(c => `<div style="flex:1;min-width:120px;padding:16px;background:linear-gradient(135deg,#F8F9FE,#EDF0FF);border-radius:12px;text-align:center;">
+                        <div style="font-size:1.5rem;">${c.icon}</div>
+                        <div style="font-size:1.3rem;font-weight:800;color:#1A1A2E;">${c.val}</div>
+                        <div style="font-size:0.72rem;color:#6C7093;">${c.label}</div>
+                    </div>`).join('');
+
+                } catch (err) {
+                    this.toast('Analitik yüklenemedi: ' + err.message, 'error');
+                }
+            },
+
+            // ═══ RAPORLAR ═══
+            async loadReports() {
+                try {
+                    const status = document.getElementById('reportStatusFilter')?.value || 'pending';
+                    const reports = await this.api('GET', `/admin/reports?status=${status}`);
+                    const tbody = document.getElementById('reportsTableBody');
+
+                    if (reports.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#888;">Rapor bulunamadı.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = reports.map(r => `
+                        <tr>
+                            <td><strong>@${r.reporter_username || 'anonim'}</strong></td>
+                            <td><span style="padding:2px 8px;border-radius:12px;font-size:0.72rem;font-weight:600;background:${r.target_type === 'deal' ? '#E8F5E9' : r.target_type === 'comment' ? '#E3F2FD' : '#FFF3E0'};color:${r.target_type === 'deal' ? '#2E7D32' : r.target_type === 'comment' ? '#1565C0' : '#E65100'};">${r.target_type === 'deal' ? 'Fırsat' : r.target_type === 'comment' ? 'Yorum' : 'Kullanıcı'}</span></td>
+                            <td style="font-size:0.78rem;color:#666;">${r.target_id.slice(0, 8)}...</td>
+                            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.reason}</td>
+                            <td style="font-size:0.75rem;color:#888;">${new Date(r.created_at).toLocaleDateString('tr-TR')}</td>
+                            <td>
+                                ${r.status === 'pending' ? `
+                                    <button onclick="Admin.resolveReport(${r.id}, 'resolved')" style="padding:4px 10px;border-radius:6px;border:none;background:#4CAF50;color:white;cursor:pointer;font-size:0.72rem;margin-right:4px;">✓ Çöz</button>
+                                    <button onclick="Admin.resolveReport(${r.id}, 'dismissed')" style="padding:4px 10px;border-radius:6px;border:none;background:#F44336;color:white;cursor:pointer;font-size:0.72rem;">✕ Reddet</button>
+                                ` : `<span style="font-size:0.72rem;color:#888;">${r.status}</span>`}
+                            </td>
+                        </tr>
+                    `).join('');
+
+                } catch (err) {
+                    this.toast('Raporlar yüklenemedi: ' + err.message, 'error');
+                }
+            },
+
+            async resolveReport(id, status) {
+                try {
+                    const note = status === 'dismissed' ? (prompt('Red nedeni (opsiyonel):') || '') : '';
+                    await this.api('PUT', `/admin/reports/${id}`, { status, admin_note: note });
+                    this.toast(status === 'resolved' ? 'Rapor çözüldü.' : 'Rapor reddedildi.', 'success');
+                    this.loadReports();
+                } catch (err) {
+                    this.toast('İşlem başarısız: ' + err.message, 'error');
+                }
+            },
+
+            // ═══ YATIRIMCILAR ═══
+            async loadInvestors() {
+                try {
+                    const investors = await this.api('GET', '/admin/investors');
+                    const tbody = document.getElementById('investorsTableBody');
+
+                    if (investors.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#888;">Henüz başvuru yok.</td></tr>';
+                        return;
+                    }
+
+                    const statusColors = { 'new': '#3B82F6', 'contacted': '#F59E0B', 'accepted': '#10B981', 'rejected': '#EF4444' };
+                    const statusLabels = { 'new': 'Yeni', 'contacted': 'İletişime Geçildi', 'accepted': 'Kabul Edildi', 'rejected': 'Reddedildi' };
+
+                    tbody.innerHTML = investors.map(inv => `
+                        <tr>
+                            <td><strong>${inv.name}</strong></td>
+                            <td style="font-size:0.78rem;">${inv.email}</td>
+                            <td style="font-size:0.78rem;">${inv.phone || '-'}</td>
+                            <td style="font-size:0.78rem;">${inv.company || '-'}</td>
+                            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.78rem;" title="${inv.message}">${inv.message}</td>
+                            <td style="font-size:0.72rem;color:#888;">${new Date(inv.created_at).toLocaleDateString('tr-TR')}</td>
+                            <td>
+                                <select onchange="AdminApp.updateInvestor(${inv.id}, this.value)" style="padding:4px 8px;border-radius:6px;border:1px solid #ddd;font-size:0.72rem;background:${statusColors[inv.status] || '#ccc'}20;color:${statusColors[inv.status] || '#888'};">
+                                    <option value="new" ${inv.status === 'new' ? 'selected' : ''}>Yeni</option>
+                                    <option value="contacted" ${inv.status === 'contacted' ? 'selected' : ''}>İletişime Geçildi</option>
+                                    <option value="accepted" ${inv.status === 'accepted' ? 'selected' : ''}>Kabul Edildi</option>
+                                    <option value="rejected" ${inv.status === 'rejected' ? 'selected' : ''}>Reddedildi</option>
+                                </select>
+                            </td>
+                        </tr>
+                    `).join('');
+                } catch (err) {
+                    this.toast('Yatırımcılar yüklenemedi: ' + err.message, 'error');
+                }
+            },
+
+            async updateInvestor(id, status) {
+                try {
+                    await this.api('PUT', `/admin/investors/${id}`, { status });
+                    this.toast('Durum güncellendi.', 'success');
+                } catch (err) {
+                    this.toast('Güncelleme başarısız.', 'error');
+                }
+            },
+
+            // ═══ SETTINGS ═══
+            async loadSettings() {
+                try {
+                    const settings = await this.api('GET', '/admin/settings');
+                    this.settings = {};
+                    settings.forEach(s => this.settings[s.key] = s.value);
+
+                    // AI
+                    document.getElementById('aiEnabled').checked = this.settings.ai_enabled === 'true';
+                    document.getElementById('aiProvider').value = this.settings.ai_provider || 'none';
+                    document.getElementById('aiApiKey').value = this.settings.ai_api_key || '';
+                    document.getElementById('aiModel').value = this.settings.ai_model || '';
+                    document.getElementById('aiLocalUrl').value = this.settings.ai_local_url || 'http://localhost:11434';
+
+                    // Provider'a göre göster/gizle
+                    const prov = this.settings.ai_provider || 'none';
+                    document.getElementById('apiKeySection').style.display = prov === 'ollama' || prov === 'none' ? 'none' : '';
+                    document.getElementById('localAiSection').style.display = prov === 'ollama' ? '' : 'none';
+
+                    // Site
+                    document.getElementById('siteName').value = this.settings.site_name || '';
+                    document.getElementById('siteDescription').value = this.settings.site_description || '';
+                    document.getElementById('userApprovalRequired').checked = this.settings.user_approval_required === 'true';
+                    document.getElementById('dealApprovalRequired').checked = this.settings.deal_approval_required === 'true';
+                    document.getElementById('maintenanceMode').checked = this.settings.maintenance_mode === 'true';
+                    document.getElementById('dealsPerPage').value = this.settings.deals_per_page || '15';
+                    document.getElementById('maxUploadSize').value = this.settings.max_upload_size || '5';
+
+                    // Tema seçici
+                    const currentTheme = this.settings.theme_preset || 'mint';
+                    document.querySelectorAll('.theme-preset-option').forEach(opt => {
+                        opt.textContent = opt.dataset.theme === currentTheme ? '✓' : '';
+                        opt.style.border = opt.dataset.theme === currentTheme ? '3px solid #1A1A2E' : '3px solid transparent';
+                        opt.onclick = () => {
+                            document.querySelectorAll('.theme-preset-option').forEach(o => {
+                                o.textContent = '';
+                                o.style.border = '3px solid transparent';
+                            });
+                            opt.textContent = '✓';
+                            opt.style.border = '3px solid #1A1A2E';
+                            this._selectedTheme = opt.dataset.theme;
+                        };
+                    });
+                    this._selectedTheme = currentTheme;
+
+                } catch (e) { this.toast('Ayarlar yüklenemedi', 'error'); }
+            },
+
+            async saveAiSettings() {
+                try {
+                    await this.api('PUT', '/admin/settings', {
+                        settings: [
+                            { key: 'ai_enabled', value: document.getElementById('aiEnabled').checked.toString() },
+                            { key: 'ai_provider', value: document.getElementById('aiProvider').value },
+                            { key: 'ai_api_key', value: document.getElementById('aiApiKey').value },
+                            { key: 'ai_model', value: document.getElementById('aiModel').value },
+                            { key: 'ai_local_url', value: document.getElementById('aiLocalUrl').value }
+                        ]
+                    });
+                    this.toast('AI ayarları kaydedildi!');
+                } catch (e) { this.toast(e.message, 'error'); }
+            },
+
+            async testAi() {
+                const result = document.getElementById('aiTestResult');
+                result.style.display = '';
+                result.innerHTML = '⏳ Test ediliyor...';
+                result.style.color = 'var(--text)';
+                try {
+                    const data = await this.api('POST', '/admin/ai/test');
+                    result.innerHTML = data.success
+                        ? `✅ ${data.message}` + (data.models ? `<br>Modeller: ${data.models.join(', ')}` : '')
+                        : `❌ ${data.message}`;
+                    result.style.color = data.success ? 'var(--success)' : 'var(--danger)';
+                } catch (e) { result.innerHTML = `❌ ${e.message}`; result.style.color = 'var(--danger)'; }
+            },
+
+            async saveSiteSettings() {
+                try {
+                    await this.api('PUT', '/admin/settings', {
+                        settings: [
+                            { key: 'site_name', value: document.getElementById('siteName').value },
+                            { key: 'site_description', value: document.getElementById('siteDescription').value },
+                            { key: 'user_approval_required', value: document.getElementById('userApprovalRequired').checked.toString() },
+                            { key: 'deal_approval_required', value: document.getElementById('dealApprovalRequired').checked.toString() },
+                            { key: 'maintenance_mode', value: document.getElementById('maintenanceMode').checked.toString() },
+                            { key: 'deals_per_page', value: document.getElementById('dealsPerPage').value },
+                            { key: 'max_upload_size', value: document.getElementById('maxUploadSize').value },
+                            { key: 'theme_preset', value: this._selectedTheme || 'mint' }
+                        ]
+                    });
+                    this.toast('Site ayarları kaydedildi!');
+                } catch (e) { this.toast(e.message, 'error'); }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => AdminApp.init());
+    </script>
+</body>
+
+</html>
